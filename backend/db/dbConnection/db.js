@@ -7,7 +7,6 @@ if (!mongoUrl) {
 }
 
 mongoose.connect(mongoUrl, {
-    useNewUrlParser: true,
     useUnifiedTopology: true,
 });
 
