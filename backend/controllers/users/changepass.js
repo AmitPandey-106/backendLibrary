@@ -1,5 +1,5 @@
 const User = require('../../db/schema/userlogin');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 exports.changepassword = async (req, res) => {
     const { currentPassword, newPassword } = req.body;

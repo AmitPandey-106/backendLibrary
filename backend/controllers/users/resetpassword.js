@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const User = require('../../db/schema/userlogin');
 const userProfile = require('../../db/schema/profileform');
 
