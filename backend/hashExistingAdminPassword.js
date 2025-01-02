@@ -1,5 +1,5 @@
 // hashExistingAdminPassword.js
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const User = require('./db/schema/userlogin'); // Adjust path to your User schema
 
