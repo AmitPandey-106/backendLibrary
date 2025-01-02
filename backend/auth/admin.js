@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../db/schema/userlogin');
 const jwt = require('jsonwebtoken');
-const { jwt_secret } = require('../key');
+const jwt_secret = process.env.JWT_SECRET
 
 exports.adminSignin = async (req, res) => {
     if (req.method === 'POST') {

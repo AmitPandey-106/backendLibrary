@@ -1,18 +1,16 @@
-// Import Mongoose
 const mongoose = require('mongoose');
-const { mongoUrl } = require('../../key');
+const mongoUrl = process.env.MONGO_URL;
 
-// MongoDB connection URI
-const uri = mongoUrl;
+if (!mongoUrl) {
+    console.error('Mongo URI is not defined in the .env file');
+    process.exit(1); // Exit the application if no URI is defined
+}
 
-// Mongoose connection options
-mongoose.connect(uri, {
+mongoose.connect(mongoUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    // You can add more options if needed, such as server selection timeout
 });
 
-// Events for successful or failed connection
 mongoose.connection.on('connected', () => {
     console.log('Connected to MongoDB');
 });
@@ -25,5 +23,4 @@ mongoose.connection.on('disconnected', () => {
     console.log('Disconnected from MongoDB');
 });
 
-// Export mongoose for use in other files
 module.exports = mongoose;

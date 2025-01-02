@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const User = require('../db/schema/userlogin');
 const profileform = require('../db/schema/profileform')
 const jwt = require('jsonwebtoken');
-const { jwt_secret } = require('../key')
+const jwt_secret = process.env.JWT_SECRET
 
 exports.signin = async (req, res) => {
     if (req.method == 'POST') {
