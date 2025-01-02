@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const User =  require('../db/schema/userlogin')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const generatePassword = () => {
     const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
