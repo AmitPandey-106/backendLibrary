@@ -12,7 +12,7 @@ const BookForm = require('./db/schema/bookform');
 const { upload, uploadEBook, Allebooks, getAllCategory, getEbookById } = require('./controllers/Ebook');
 
 const corsOptions = {
-  origin: 'https://forentend-library-ht94.vercel.app', // Replace with your Vercel app URL
+  origin: 'https://forentend-library-ptc4twpca-amitpandey-106s-projects.vercel.app', // Replace with your Vercel app URL
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204
