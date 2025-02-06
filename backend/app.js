@@ -11,7 +11,7 @@ const loginrequire = require('./middleware/loginrequired')
 const BookForm = require('./db/schema/bookform');
 const { upload, uploadEBook, Allebooks, getAllCategory, getEbookById } = require('./controllers/Ebook');
 const corsOptions = {
-  origin: 'https://forentend-library-ht94.vercel.app', // Replace with your Vercel app URL
+  origin: 'https://forentend-library.vercel.app', // Replace with your Vercel app URL
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204
