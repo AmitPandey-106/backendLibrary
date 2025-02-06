@@ -122,7 +122,7 @@ exports.handleBorrowRequest = async (req, res) => {
       await borrowedBook.save();
 
       // Update the User table: Add borrowed book to user's borrowedBooks array
-      const user = await User.findOne({ profileId: borrowRequest.userId });
+      const user = await User.findOne({ profileId: borrowRequest.user });
       if (!user) return res.status(404).json({ message: 'User not found' });
 
       user.borrowedBooks.push(borrowedBook._id);
@@ -151,7 +151,6 @@ exports.handleBorrowRequest = async (req, res) => {
 
 exports.handleReturnRequest = async (req, res) => {
   const { borrowedBookId } = req.params;
-  console.log(borrowedBookId)
 
   try {
     // Find the borrowed book record and populate relevant fields

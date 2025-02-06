@@ -152,7 +152,6 @@ exports.searchbook = async (req, res) => {
 exports.filterSearch = async (req, res) => {
   try {
     const { subname, query } = req.query;
-
     // Step 1: Find the subject ID based on the subject name (if subname is provided)
     let subjectId = null;
     if (subname) {

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const mongoUrl = "mongodb+srv://arprs9076:2LCIBrJTiHfwO6pa@nextjsdatabase.vrxec.mongodb.net/Library?retryWrites=true&w=majority&appName=nextjsdatabase";
+const mongoUrl = "mongodb+srv://arprs9076:2LCIBrJTiHfwO6pa@nextjsdatabase.vrxec.mongodb.net/Library?retryWrites=true&w=majority&appName=nextjsdatabase"
 
 if (!mongoUrl) {
     console.error('Mongo URI is not defined in the .env file');

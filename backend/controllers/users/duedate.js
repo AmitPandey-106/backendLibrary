@@ -2,42 +2,51 @@ const BorrowedBook = require("../../db/schema/borrowedbooks");
 
 exports.tommorowdue = async (req, res) => {
   try {
-    // Define the current time and calculate the time 10 minutes ago
     const now = new Date();
-    const tenMinutesAhead = new Date(now.getTime() + 10 * 60 * 1000); // 10 minutes ago
+    
+    // Get tomorrow's start (midnight) and end (11:59:59 PM)
+    const tomorrowStart = new Date(now);
+    tomorrowStart.setDate(now.getDate() + 1);
+    tomorrowStart.setHours(0, 0, 0, 0);
 
-    // Query for books due between 10 minutes ago and now
+    const tomorrowEnd = new Date(tomorrowStart);
+    tomorrowEnd.setHours(23, 59, 59, 999);
+
+    // Query for books due strictly tomorrow
     const dueBooks = await BorrowedBook.find({
-      dueDate: { $gte: now, $lte: tenMinutesAhead },
+      dueDate: { $gte: tomorrowStart, $lte: tomorrowEnd },
     })
-      .populate("book", "title author") // Populate book details: 'name' and 'author' fields
-      .populate("user", "firstName lastName email"); // Populate user details: 'name', 'email', and 'contactNumber'
+      .populate("book", "title author") // Populate book details
+      .populate("user", "firstName lastName email"); // Populate user details
 
-    // Send a successful response with the retrieved data
     res.status(200).json({
       success: true,
       dueBooks,
     });
   } catch (error) {
-    console.error("Error fetching books due within 10 minutes:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Error fetching books due soon." });
+    console.error("Error fetching books due tomorrow:", error);
+    res.status(500).json({ success: false, message: "Error fetching books due tomorrow." });
   }
 };
 
+
 exports.todaydue = async (req, res) => {
   try {
-    // Define the current time and calculate the time 10 minutes ago
     const now = new Date();
-    const tenMinutesAhead = new Date(now.getTime() + 5 * 60 * 1000); // 10 minutes ago
 
-    // Query for books due between 10 minutes ago and now
+    // Get today's start time (00:00:00 AM) and end time (11:59:59 PM)
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0); // Midnight of today
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999); // End of today
+
+    // Query for books due today
     const todayDue = await BorrowedBook.find({
-      dueDate: { $gte: now, $lte: tenMinutesAhead },
+      dueDate: { $gte: startOfToday, $lte: endOfToday },
     })
-      .populate("book", "title author") // Populate book details: 'name' and 'author' fields
-      .populate("user", "firstName lastName email"); // Populate user details: 'name', 'email', and 'contactNumber'
+      .populate("book", "title author") // Populate book details
+      .populate("user", "firstName lastName email"); // Populate user details
 
     // Send a successful response with the retrieved data
     res.status(200).json({
@@ -45,9 +54,7 @@ exports.todaydue = async (req, res) => {
       todayDue,
     });
   } catch (error) {
-    console.error("Error fetching books due within 10 minutes:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Error fetching books due soon." });
+    console.error("Error fetching books due today:", error);
+    res.status(500).json({ success: false, message: "Error fetching books due today." });
   }
 };

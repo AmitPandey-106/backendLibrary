@@ -5,6 +5,7 @@ const User = require('../../db/schema/profileform'); // Adjust path as needed
 const Notification = require('../../db/schema/notifymodel')
 const Books = require('../../db/schema/booksdetails')
 const AuthorModel = require('../../db/schema/author')
+const mongoose =require('mongoose')
 
 // Function to send an email notification
 const sendEmail = async (email, subject, title, duedate) => {
@@ -124,6 +125,9 @@ cron.schedule('*/1 * * * *', async () => {
   
   exports.appNotify = async (req, res) => {
     const { userId } = req.params;
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'Invalid profile ID' });
+    }
   
     try {
       if (!userId) {
@@ -131,9 +135,10 @@ cron.schedule('*/1 * * * *', async () => {
       }
   
       const notifications = await Notification.find({ user: userId })
-      .populate('book', 'TITLE author PHOTO')
+      .populate('book', 'TITLE AUTH_ID1 PHOTO')
       .populate('user', 'firstName lastName')
       .sort({ timestamp: -1 })
+
       res.json({ success: true, notifications });
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -141,19 +146,38 @@ cron.schedule('*/1 * * * *', async () => {
     }
   };
   
-exports.returnNotify= async (req, res) => {
+exports.detailNotify= async (req, res) => {
     try {
-      const detailedNotification = await Notification.findById(req.params.id)
-        .populate('book', 'TITLE PHOTO')
-        .populate('user', 'firstName lastName')
-        .lean();
+      const notificationId = req.params.id;
+      const updatedNotification = await Notification.findByIdAndUpdate(
+        notificationId,
+      { read: true }, // Set the read field to true
+      { new: true }
+      )
+      .populate({
+        path: 'book',
+        select: 'TITLE AUTH_ID1 PHOTO', // Select specific fields from the book model
+      })
+      .populate({
+        path: 'user',
+        select: 'firstName lastName userId', // Select userId and other fields from the user model
+        populate: {
+          path: 'userId', // Populate userId from the userlogin model
+          select: '_id borrowedBooks penalties', // Select specific fields from userlogin
+        },
+      })
+      .lean(); 
+      if (!updatedNotification) {
+        return res.status(404).json({ error: 'Notification not found' });
+      }
 
-      const author = await AuthorModel.findOne({ AUTH_ID: detailedNotification.book.AUTH_ID1 });
-      if (!detailedNotification) {
+      const author = await AuthorModel.findOne({ AUTH_ID: updatedNotification.book.AUTH_ID1 });
+      if (!updatedNotification) {
         return res.status(404).json({ error: 'Notification not found' });
       }
       res.status(200).json({
-        detailedNotification, 
+        success: true,
+        detailedNotification: updatedNotification, 
         author: author ? author.AUTH_NAME : "Author not found"});
     } catch (error) {
       console.error('Error fetching notification details:', error);

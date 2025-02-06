@@ -247,3 +247,31 @@ exports.getAllBorrowedBooks = async (req, res) => {
     }
   };
   
+  exports.autocompleteAuthor = async (req, res) => {
+    try {
+      const { q } = req.query; // Get the search term from the query string
+  
+      if (!q || q.trim() === '') {
+        return res.status(400).json({ success: false, message: 'Query parameter is required.' });
+      }
+  
+      // Search for authors where the name matches the input query
+      const authors = await AuthorModel.find(
+        { AUTH_NAME: { $regex: q, $options: 'i' } }, // Case-insensitive search
+        { AUTH_NAME: 1 } // Return only the `AUTH_NAME` and `AUTH_ID` fields
+      ).limit(10); // Limit the results to 10 suggestions
+  
+      if (authors.length === 0) {
+        return res.status(404).json({ success: false, message: 'No authors found.' });
+      }
+  
+      res.status(200).json({
+        success: true,
+        suggestions: authors.map((author) => author.AUTH_NAME),
+      });
+    } catch (error) {
+      console.error('Error in autocompleteAuthor API:', error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  };
+  

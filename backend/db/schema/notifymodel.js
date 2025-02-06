@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const NotificationSchema = new mongoose.Schema({
-  book: { type: mongoose.Schema.Types.ObjectId, ref: 'Bookform', required: true },
+  book: { type: mongoose.Schema.Types.ObjectId, ref: 'BooksDetail', required: true },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'StudentProfile', required: true },
   title: { type: String, required: true },
   message: { type: String, required: true },
@@ -10,5 +10,5 @@ const NotificationSchema = new mongoose.Schema({
 });
 
 Notification = mongoose.model('Notification', NotificationSchema);
- module.exports = Notification
+module.exports = Notification
  

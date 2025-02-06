@@ -11,14 +11,17 @@ exports.BookForm = async(req, res)=>{
             if(!title || !author || !quantity || !stream){
                 return res.status(400).json({ msg: "please fill all fields"})
             }
+            console.log("Cloudinary Config:", cloudinary.config());
 
+            console.log('1')
+            try{
             const uploadedImage = await cloudinary.uploader.upload(bookimage, {
                 folder: 'reels_shorts',
                 public_id: `user_${Date.now()}`,
                 overwrite: true,
               });
-
-              const photoUrl = uploadedImage.secure_url;
+              console.log('2')
+            const photoUrl = uploadedImage.secure_url;
             const newBook = new Bookform({
                 ISBN:isbn,
                 title,
@@ -30,6 +33,10 @@ exports.BookForm = async(req, res)=>{
             
             const savebook = await newBook.save()
             res.status(200).json({ msg :"Book added successfully", savebook})
+        } catch (error) {
+            console.error("Cloudinary Upload Error:", error);
+            res.status(500).json({ err: error.message });
+        }
         }catch(error){
             console.log("getting error while saving")
             res.status(500).json({ err: "Get error while saving book"})
