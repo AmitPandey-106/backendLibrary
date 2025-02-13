@@ -84,6 +84,7 @@ const addmember = async (req, res, next) => {
                     <p>Your library account has been created. Here are your login details:</p>
                     <p><strong>User ID:</strong> ${userId}</p>
                     <p><strong>Password:</strong> ${password}</p>
+                    <p>You can login here: <a href="https://forentend-library.vercel.app/" style="color: #4A90E2;">Library Login</a></p>
                     <p>Please keep these details secure and do not share them with anyone.</p>
                     <p>Best regards,<br>The Library Team</p>
                 </div>

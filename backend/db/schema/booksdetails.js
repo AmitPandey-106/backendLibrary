@@ -38,6 +38,9 @@ const BooksDetailSchema = new mongoose.Schema({
     SUB_ID:{
         type:Number
     },
+    TOTAL_QUANTITY:{
+        type:Number,
+    },
     TOTAL_VOL:{
         type:Number,
         required:true
@@ -49,7 +52,19 @@ const BooksDetailSchema = new mongoose.Schema({
     LIB_CODE:{
         type:String,
         default:"VDPCOELIB"
-    }
+    },
+    LOST_BOOKS: [{
+        studentId: { type: String, required:true },
+        reason: { type: String },
+        quantity: { type: Number, default: 1 },
+        date: { type: Date, default: Date.now }
+    }],
+    DAMAGED_BOOKS: [{
+        studentId: { type: String, required:true },
+        reason: { type: String },
+        quantity: { type: Number, default: 1 },
+        date: { type: Date, default: Date.now }
+    }]
 })
 
 const BookDetails = mongoose.model("BooksDetail", BooksDetailSchema)

@@ -10,14 +10,14 @@ const mongoose = require('./db/dbConnection/db')
 const loginrequire = require('./middleware/loginrequired')
 const BookForm = require('./db/schema/bookform');
 const { upload, uploadEBook, Allebooks, getAllCategory, getEbookById } = require('./controllers/Ebook');
-const corsOptions = {
-  origin: 'https://forentend-library.vercel.app', // Replace with your Vercel app URL
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
-  optionsSuccessStatus: 204
-}
+// const corsOptions = {
+//   origin: 'https://forentend-library.vercel.app', // Replace with your Vercel app URL
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   credentials: true,
+//   optionsSuccessStatus: 204
+// }
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use('/uploads/ebooks', express.static(path.join(__dirname, 'uploads/ebooks')))
 const Signin = require('./auth/signin')

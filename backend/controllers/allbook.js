@@ -56,33 +56,89 @@ exports.getBookById = async (req, res) => {
 
 exports.updatebook = async (req, res) => {
   const { id } = req.params;
-  const { CAT_NO, LANG_CODE, TITLE, SUB_TITLE, AUTH_ID1, AUTH_ID2, PLACE_OF_PUB, PUB_ID, YEAR_OF_PUB, SUB_ID, TOTAL_VOL, PHOTO } = req.body
+  const {
+    mode, // Mode to check if it's a lost/damaged book update
+    CAT_NO,
+    LANG_CODE,
+    TITLE,
+    SUB_TITLE,
+    AUTH_ID1,
+    AUTH_ID2,
+    PLACE_OF_PUB,
+    YEAR_OF_PUB,
+    SUB_ID,
+    TOTAL_VOL,
+    PHOTO,
+    Category, // LOST_BOOKS or DAMAGED_BOOKS
+    studentId,
+    reason,
+    quantity
+  } = req.body;
 
   try {
-    const book = await ClgBook.findByIdAndUpdate(id, {
-      CAT_NO,
-      LANG_CODE,
-      TITLE,
-      SUB_TITLE,
-      AUTH_ID1,
-      AUTH_ID2,
-      PLACE_OF_PUB,
-      PUB_ID,
-      YEAR_OF_PUB,
-      SUB_ID,
-      TOTAL_VOL,
-      PHOTO
-    }, { new: true });
+    let book;
+
+    if (mode === 'dl') {
+      console.log(mode)
+      // Updating lost or damaged books
+      book = await ClgBook.findById(id);
+
+      if (!book) {
+        return res.status(404).json({ message: 'Book not found' });
+      }
+
+      if (quantity > book.TOTAL_QUANTITY) {
+        return res.status(400).json({ message: "Not enough books available to mark as damaged" });
+      }
+      const lostOrDamagedBook = {
+        studentId,
+        reason,
+        quantity,
+      };
+      
+      if (Category === 'LOST_BOOKS') {
+        book.LOST_BOOKS.push(lostOrDamagedBook);
+      } else if (Category === 'DAMAGED_BOOKS') {
+        book.DAMAGED_BOOKS.push(lostOrDamagedBook);
+      }
+      book.TOTAL_QUANTITY -= quantity
+      if(book.TOTAL_VOL>0){
+        book.TOTAL_VOL -= quantity
+      }
+
+      await book.save();
+    } else {
+      // Normal book update
+      book = await ClgBook.findByIdAndUpdate(
+        id,
+        {
+          CAT_NO,
+          LANG_CODE,
+          TITLE,
+          SUB_TITLE,
+          AUTH_ID1,
+          AUTH_ID2,
+          PLACE_OF_PUB,
+          YEAR_OF_PUB,
+          SUB_ID,
+          TOTAL_VOL,
+          PHOTO, // Image update if provided
+        },
+        { new: true }
+      );
+    }
 
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
     }
 
-    res.status(200).json({ book });
+    res.status(200).json({ book, message: 'Book updated successfully!' });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Error updating book details' });
   }
-}
+};
+
 
 // exports.getAllStreams = async (req, res) => {
 //   try {
