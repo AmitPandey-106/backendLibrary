@@ -39,7 +39,7 @@ exports.getBookById = async (req, res) => {
       const recommendations = await ClgBook.find({
         _id: { $ne: req.params.id }, // Exclude the current book
         book_type: book.book_type, // Example: recommend books of the same type
-      }).limit(5); // Adjust the limit as needed
+      }).limit(8); // Adjust the limit as needed
 
       res.status(200).json({
         book: {...book.toObject(), TOTAL_VOL: totalVol},
